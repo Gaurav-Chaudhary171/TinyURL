@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package tinyurl;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/gaurav.chaudhary/GolandProjects/TinyURL;proto";
+
+//Register User Request body
+message RegisterUserRequest {
+    string first_name = 1;
+    string last_name = 2;
+    // Username should be constructed from first half of first_name and last half of last_name
+    string username = 3;
+}
+
+//Registered User response body
+message RegisteredUserResponse {
+    string status = 1;
+    string username = 2;
+}
+
+// Request Params require for logging in
+message LoginRequest {
+    string username = 1;
+}
+
+// Response body after logging in
+message LoginResponse {
+    string status = 1;
+    RegisterUserRequest user = 2;
+}
+
+// Shortening URL 
+message ShortenURLRequest {
+    string username = 1;
+    string url = 2;
+}
+
+// Shortening URL 
+message ShortenURLResponse {
+    string status = 1;
+    string shortenurl = 2;
+    string originalurl = 3;
+}
+
+// Extended URL 
+message ExtendURLRequest {
+    string username = 1;
+    string url = 2;
+}
+
+// Extended URL 
+message ExtendURLResponse {
+    string status = 1;
+    string originalurl = 2;
+    string extenedurl = 3;
+}
+
+// Logging service API
+service LoginService {
+    rpc login(LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/v1/login"
+            body: "*"
+        };
+    }
+}
+
+// Shortening URL API
+service ShortenURL {
+    rpc shortenurl(ShortenURLRequest) returns (ShortenURLResponse) {
+        option (google.api.http) = {
+            post: "/v1/shortenurl"
+            body: "*"
+        };
+    }
+}
+
+// Register User API
+service RegisterUser {
+    rpc registerUser(RegisterUserRequest) returns (RegisteredUserResponse) {
+        option (google.api.http) = {
+            post: "/v1/registeruser"
+            body: "*"
+        };
+    }
+}
+
+// Extending URL API
+service ExtendedURL {
+    rpc extendURL(ExtendURLRequest) returns (ExtendURLResponse) {
+        option (google.api.http) = {
+            post: "/v1/extendurl"
+            body: "*"
+        };
+    }
+} 

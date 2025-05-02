@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/gaurav.chaudhary/GolandProjects/TinyURL/proto";
+
+service RegisterUser {
+    rpc RegisterUser(RegisterUserRequest) returns (RegisteredUserResponse) {
+        option (google.api.http) = {
+            post: "/v1/registeruser"
+            body: "*"
+        };
+    }
+}
+
+service LoginService {
+    rpc Login(LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/v1/login"
+            body: "*"
+        };
+    }
+}
+
+service Shorten {
+    rpc Shorten(ShortenRequest) returns (ShortenResponse) {
+        option (google.api.http) = {
+            post: "/v1/shorten"
+            body: "*"
+        };
+    }
+}
+
+message RegisterUserRequest {
+    string first_name = 1;
+    string last_name = 2;
+    string username = 3;
+}
+
+message RegisteredUserResponse {
+    string status = 1;
+    string username = 2;
+}
+
+message LoginRequest {
+    string username = 1;
+}
+
+message LoginResponse {
+    string status = 1;
+    RegisterUserRequest user = 2;
+}
+
+message ShortenRequest {
+    string url = 1;
+    string username = 2;
+}
+
+message ShortenResponse {
+    string status = 1;
+    string short_url = 2;
+} 
