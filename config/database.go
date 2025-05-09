@@ -2,11 +2,12 @@ package config
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
+	"gorm.io/driver/mysql"
 	"log"
 	"os"
 	"time"
 
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -27,16 +28,24 @@ type connectionString struct {
 	conn DatabaseConfig `toml:"database"`
 }
 
+func LoadDataFromToml(filepath string) (*DatabaseConfig, error) {
+	var config connectionString
+	_, err := toml.DecodeFile(filepath, &config)
+	if err != nil {
+		log.Println("Error loading config file:", err)
+		return nil, err
+	}
+	return &config.conn, nil
+}
+
 // GetDBConfig returns database configuration
 func GetDBConfig() *DatabaseConfig {
-	return &DatabaseConfig{
-		Host:     getEnv("DB_HOST", "localhost"),
-		Port:     getEnv("DB_PORT", "5432"),
-		User:     getEnv("DB_USER", "mysql"),
-		Password: getEnv("DB_PASSWORD", "mysql"),
-		DBName:   getEnv("DB_NAME", "tinyurl"),
-		SSLMode:  getEnv("DB_SSLMODE", "disable"),
+	conn, err := LoadDataFromToml("/test.toml")
+	if conn == nil {
+		log.Println("Error loading config:", err)
 	}
+	log.Println("Database Connection", conn)
+	return conn
 }
 
 // GetDSN returns the Data Source Name
@@ -61,7 +70,7 @@ func InitDB() {
 		},
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
 	if err != nil {
