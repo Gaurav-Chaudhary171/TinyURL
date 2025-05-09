@@ -23,13 +23,17 @@ type DatabaseConfig struct {
 	SSLMode  string
 }
 
+type connectionString struct {
+	conn DatabaseConfig `toml:"database"`
+}
+
 // GetDBConfig returns database configuration
 func GetDBConfig() *DatabaseConfig {
 	return &DatabaseConfig{
 		Host:     getEnv("DB_HOST", "localhost"),
 		Port:     getEnv("DB_PORT", "5432"),
-		User:     getEnv("DB_USER", "postgres"),
-		Password: getEnv("DB_PASSWORD", "postgres"),
+		User:     getEnv("DB_USER", "mysql"),
+		Password: getEnv("DB_PASSWORD", "mysql"),
 		DBName:   getEnv("DB_NAME", "tinyurl"),
 		SSLMode:  getEnv("DB_SSLMODE", "disable"),
 	}
